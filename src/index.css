@@ -62,6 +62,10 @@ img { display: block; max-width: 100%; }
 
   .stage-inner { display: flex; align-items: center; justify-content: center; }
 
+  /* Sized by JS to the scaled device footprint, so it always fits the window
+     and centres normally. */
+  .phone-fit { position: relative; flex: none; }
+
   /* Galaxy S20 Ultra — 412 x 915 CSS px (1440 x 3200 at 3.5x), 20:9.
      Height-driven so the whole device fits any laptop screen. */
   .phone-shell {
@@ -69,10 +73,13 @@ img { display: block; max-width: 100%; }
     /* True Galaxy S20 Ultra viewport: 412 x 915 CSS px (1440 x 3200 at 3.5x).
        JS sets --phone-scale so the whole device fits the window without ever
        changing the viewport the app lays out against. */
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 434px;
     height: 937px;
     transform: scale(var(--phone-scale, 1));
-    transform-origin: center center;
+    transform-origin: top left;
     background: #0b0c0e;
     border-radius: 44px;
     padding: var(--bezel);
