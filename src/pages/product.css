@@ -1,0 +1,98 @@
+.pdp { padding-bottom: 8px; }
+
+.pdp-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 20;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink-strong);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+}
+
+.pdp-media {
+  aspect-ratio: 3 / 4;
+  background: var(--bg-soft);
+}
+.pdp-media img { width: 100%; height: 100%; object-fit: cover; }
+
+.pdp-info { padding: 14px 14px 4px; }
+.pdp-brand { font-size: 14px; font-weight: 700; color: var(--ink-strong); }
+.pdp-name {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--muted);
+  margin: 4px 0 12px;
+  line-height: 1.4;
+}
+
+.pdp-price { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.pdp-price .now { font-size: 19px; font-weight: 700; color: var(--ink-strong); }
+.pdp-price .was { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+.pdp-price .off { font-size: 13px; font-weight: 600; color: var(--green); }
+.pdp-tax { font-size: 11px; color: var(--muted); margin: 3px 0 0; }
+
+.pdp-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.pdp-block { margin-top: 20px; }
+.pdp-block h3 {
+  font-size: 12.5px;
+  margin: 0 0 9px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
+}
+.pdp-copy { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+.sizes { display: flex; gap: 8px; flex-wrap: wrap; }
+.size {
+  min-width: 42px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 12px;
+  color: var(--ink);
+}
+.size.is-active {
+  border-color: var(--ink-strong);
+  background: var(--ink-strong);
+  color: #fff;
+  font-weight: 600;
+}
+
+.pdp-related { margin-top: 22px; }
+
+.pdp-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+}
+.btn {
+  flex: 1;
+  height: 42px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--ink-strong);
+}
+.btn.ghost { background: #fff; color: var(--ink-strong); }
+.btn.solid { background: var(--ink-strong); color: #fff; }

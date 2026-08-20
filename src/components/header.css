@@ -1,0 +1,95 @@
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.hdr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 6px;
+}
+
+.logo { display: flex; align-items: baseline; gap: 4px; }
+.logo-mark {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+  color: var(--pink);
+  font-style: italic;
+}
+.logo-sub {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+  color: var(--ink-strong);
+}
+
+.hdr-icons { display: flex; gap: 6px; }
+.icon-btn {
+  position: relative;
+  background: none;
+  border: 0;
+  font-size: 17px;
+  color: var(--ink);
+  padding: 4px 6px;
+  line-height: 1;
+}
+.bag-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--pink);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 999px;
+  min-width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  padding: 0 3px;
+}
+
+.search {
+  margin: 2px 12px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  height: 36px;
+}
+.search-ico { color: var(--muted); font-size: 15px; }
+.search input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 13px;
+  width: 100%;
+  color: var(--ink);
+}
+
+.gender-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 4px;
+}
+.gender-tab {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 9px 4px;
+  border-bottom: 2px solid transparent;
+}
+.gender-tab.is-active {
+  color: var(--ink-strong);
+  border-bottom-color: var(--ink-strong);
+}
