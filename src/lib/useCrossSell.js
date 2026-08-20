@@ -37,7 +37,14 @@ export default function useCrossSell(bagProducts, wishEntries, revision = '', li
       if (base.mode !== 'A') return
 
       const inBag = new Set(bagProducts.map((p) => p.id))
-      const pool = wishEntries.filter((w) => !inBag.has(w.product.id))
+
+      // Candidates are restricted to the departments already in the bag before
+      // the model ever sees them, so a cross-gender pairing is not something it
+      // can return — not merely something we ask it to avoid.
+      const bagGenders = new Set(bagProducts.map((p) => p.gender))
+      const pool = wishEntries.filter(
+        (w) => !inBag.has(w.product.id) && bagGenders.has(w.product.gender)
+      )
       if (!pool.length) return
 
       const picks = await fetchCrossSellPicks(

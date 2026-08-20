@@ -22,6 +22,9 @@ For each pick write a short rationale naming the bag item it goes with, then
 the item's rating and buyer count, e.g. "Pairs well with black denim - 4.5 stars from 210 buyers".
 
 Rules:
+- NEVER pair across departments. Only suggest a candidate whose "department"
+  matches the bag item's "department" - menswear goes with menswear, womenswear
+  with womenswear. A women's shirt is not a suggestion for men's jeans.
 - Refer to the bag item by its short "label", never by its full product title.
 - Keep the whole rationale under 90 characters.
 - Only return candidate ids that were given to you. Never invent an id.
@@ -45,16 +48,25 @@ export default async function handler(req, res) {
 
   const allowed = new Set(candidates.map((c) => String(c?.id)))
 
+  // Enforced here as well as in the client's candidate filter: a pick from
+  // another department is dropped rather than trusted.
+  const bagDepartments = new Set(bag.map((p) => asString(p?.department, 20)).filter(Boolean))
+  const departmentOf = new Map(
+    candidates.map((c) => [String(c?.id), asString(c?.department, 20)])
+  )
+
   const user = JSON.stringify({
     bag: bag.map((p) => ({
       label: asString(p?.label, 40),
       name: asString(p?.name, 90),
       category: asString(p?.category, 40),
+      department: asString(p?.department, 20),
     })),
     candidates: candidates.map((p) => ({
       id: String(p?.id),
       name: asString(p?.name, 90),
       category: asString(p?.category, 40),
+      department: asString(p?.department, 20),
       rating: Number(p?.avgRating) || null,
       buyers: Number(p?.verifiedBuyerCount) || null,
     })),
@@ -68,6 +80,8 @@ export default async function handler(req, res) {
     const id = asString(row?.id, 40)
     const rationale = asString(row?.rationale, 160)
     if (!id || !allowed.has(id) || seen.has(id)) continue
+    const dept = departmentOf.get(id)
+    if (bagDepartments.size && dept && !bagDepartments.has(dept)) continue
     seen.add(id)
     picks.push({ id, rationale: rationale || null })
     if (picks.length >= 10) break

@@ -214,6 +214,10 @@ export default function Wishlist() {
               key={product.id}
               entry={entry}
               product={product}
+              /* narrowing to one category is a comparison, so the scores earn
+                 their place; the unfiltered list stays the plain baseline */
+              organised={!!activeCategory}
+              onOpenConfidence={setSheetProduct}
               onShare={setShareProduct}
               onTag={setTagProduct}
               selectMode={selectMode}

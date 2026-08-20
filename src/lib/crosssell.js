@@ -103,6 +103,9 @@ export function crossSell(bagProducts, wishEntries, limit = 10) {
       let best = 0
       let bestAnchor = null
       for (const a of anchors) {
+        // Never pair across departments — a women's shirt is not a suggestion
+        // for men's jeans, however well the garment types go together.
+        if (a.product.gender !== w.product.gender) continue
         const affinity = AFFINITY[a.type]?.[t] ?? 0
         if (affinity > best) { best = affinity; bestAnchor = a.product }
       }
@@ -111,6 +114,7 @@ export function crossSell(bagProducts, wishEntries, limit = 10) {
       scored.push({
         product: w.product,
         entry: w.entry,
+        anchor: bestAnchor,
         score: best * 0.65 + (c.score / 100) * 0.35,
         reason: 'Pairs well with your ' + pairLabel(bestAnchor) + ' — ' +
           c.stats.avgRating.toFixed(1) + '★ from ' + c.stats.verifiedBuyerCount.toLocaleString('en-IN') + ' buyers',
@@ -123,7 +127,8 @@ export function crossSell(bagProducts, wishEntries, limit = 10) {
       return {
         mode: 'A',
         heading: 'From your wishlist',
-        subtitle: 'Picked to go with your ' + pairLabel(bagProducts[0]),
+        // name the bag item the top suggestion actually pairs with
+        subtitle: 'Picked to go with your ' + pairLabel(scored[0].anchor),
         items: scored.slice(0, limit),
       }
     }

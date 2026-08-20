@@ -83,11 +83,13 @@ export async function fetchCrossSellPicks(bagProducts, candidates) {
       label: pairLabel(p),
       name: p.name,
       category: p.category,
+      department: p.gender,
     })),
     candidates: candidates.map(({ product, stats }) => ({
       id: product.id,
       name: product.name,
       category: product.category,
+      department: product.gender,
       avgRating: stats.avgRating,
       verifiedBuyerCount: stats.verifiedBuyerCount,
     })),
