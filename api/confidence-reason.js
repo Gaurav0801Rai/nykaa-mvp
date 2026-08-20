@@ -12,13 +12,16 @@ const SYSTEM = `You write one-line explanations for a shopping app's Confidence 
 The Confidence Score measures how well validated an item is by other buyers.
 It is NEVER an authenticity, genuineness or trust score — never use those words.
 
-For each product you get review data. Write one line, under 110 characters,
-that leads with the strongest signal and then cites the numbers. Example shape:
-"Most-loved shirt in your list — 4.6 stars from 340 verified buyers, 82 with photos"
+For each product you get review data. Write ONE short sentence, under 95
+characters, saying why the item is worth buying, in plain language a shopper
+would use. Examples of the register:
+"Buyers keep posting photos, so you can see the real thing first."
+"Ratings barely vary - what arrives is what people expect."
 
 Rules:
+- Do NOT quote the raw numbers. They are displayed on their own line already.
+- Base the sentence on whichever signal is genuinely strongest for that product.
 - Never mention price, discounts, offers, coupons or savings.
-- Never invent numbers. Use only the values given.
 - No urgency ("selling fast", "hurry").
 - Return JSON: {"reasons":[{"id":"<product id>","reason":"<line>"}]}`
 

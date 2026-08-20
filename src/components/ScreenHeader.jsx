@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../state/store'
+import { BagIcon } from './icons'
 import './screen-header.css'
 
 // Header for the screens that stand on their own. These do not want the global
@@ -24,7 +25,7 @@ export default function ScreenHeader({ title, subtitle, actions = null, showBag 
         {actions}
         {showBag && (
           <Link to="/bag" className="shead-icon" aria-label="Bag">
-            {'⛶'}
+            <BagIcon />
             {bagCount > 0 && <span className="shead-dot">{bagCount}</span>}
           </Link>
         )}

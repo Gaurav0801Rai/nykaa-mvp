@@ -72,38 +72,51 @@ export function confidence(product) {
   })
 
   const score = Math.min(99, rows.reduce((sum, r) => sum + r.points, 0))
-  const result = { score, rows, stats, reason: reasonFor(product, stats, rows) }
+  const { why, evidence } = reasonFor(product, stats, rows)
+  const result = { score, rows, stats, why, evidence, reason: why + ' ' + evidence }
 
   cache.set(product.id, result)
   return result
 }
 
-// Deterministic reason line, built from the raw numbers. This is also the
-// fallback whenever the LLM path is unavailable — §9 requires every call to
-// have one, and §2 requires the badge to never render without a reason.
+// Two lines, deliberately: the first says why the item is worth buying in
+// plain language, the second shows the evidence behind it. A number on its own
+// is not decision support, and neither is a claim without the numbers.
+//
+// The "why" line is what the LLM rewrites when a key is configured; the
+// evidence line is pure data and is always computed here.
 export function reasonFor(product, stats, rows) {
-  const buyers = stats.verifiedBuyerCount.toLocaleString('en-IN')
-  const tail = stats.avgRating.toFixed(1) + '★ from ' + buyers + ' verified buyers'
-  const photos = stats.reviewsWithPhotos
+  return { why: whyLine(product, stats, rows), evidence: evidenceLine(stats) }
+}
 
-  // lead with whichever signal this product is genuinely strongest on
-  const lead = [...rows].sort((a, b) => b.fill - a.fill)[0]
+export const evidenceLine = (stats) =>
+  stats.avgRating.toFixed(1) +
+  '★ from ' +
+  stats.verifiedBuyerCount.toLocaleString('en-IN') +
+  ' verified buyers, ' +
+  stats.reviewsWithPhotos.toLocaleString('en-IN') +
+  ' with photos'
+
+function whyLine(product, stats, rows) {
   const noun = (product.category || 'item').toLowerCase().replace(/s$/, '')
 
   if (stats.reviewCount < 40) {
-    return 'Early days — ' + tail + ', ' + photos + ' with photos'
+    return 'Early days — too few reviews to be sure yet.'
   }
+
+  // lead with whichever signal this product is genuinely strongest on
+  const lead = [...rows].sort((a, b) => b.fill - a.fill)[0]
   switch (lead.key) {
     case 'photos':
-      return 'Buyers keep posting photos — ' + tail + ', ' + photos + ' with photos'
+      return 'Buyers keep posting photos, so you can see the real thing first.'
     case 'recency':
-      return 'Still being reviewed this month — ' + tail + ', ' + photos + ' with photos'
+      return 'Still being bought and reviewed this month, not a stale listing.'
     case 'consistency':
-      return 'Ratings barely vary — ' + tail + ', ' + photos + ' with photos'
+      return 'Ratings barely vary — what arrives is what people expect.'
     case 'rating':
-      return 'Most-loved ' + noun + ' in your list — ' + tail + ', ' + photos + ' with photos'
+      return 'One of the best-rated ' + noun + ' pieces you have saved.'
     default:
-      return 'Heavily reviewed — ' + tail + ', ' + photos + ' with photos'
+      return 'Backed by a large number of verified purchases.'
   }
 }
 

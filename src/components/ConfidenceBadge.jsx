@@ -25,8 +25,15 @@ export default function ConfidenceBadge({ product, onOpen, size = 'md' }) {
   )
 }
 
-// The reason line is mandatory — a bare number is not decision support, so the
-// badge is never rendered without one.
+// The reason is mandatory — a bare number is not decision support, so the
+// badge is never rendered without it. Two lines: why to buy, then the
+// evidence. `text` overrides only the first line, which is what the LLM writes.
 export function ConfidenceReason({ product, text }) {
-  return <p className="creason">{text || confidence(product).reason}</p>
+  const { why, evidence } = confidence(product)
+  return (
+    <>
+      <p className="creason">{text || why}</p>
+      <p className="creason-sub">{evidence}</p>
+    </>
+  )
 }

@@ -17,7 +17,7 @@ const deliveryLabel = (id) => {
 export default function WishCard({
   entry,
   product,
-  organised = false,
+  rank = null,
   onOpenConfidence,
   onShare,
   onTag,
@@ -99,15 +99,18 @@ export default function WishCard({
         </div>
         <div className="wcard-delivery">{deliveryLabel(product.id)}</div>
 
-        {organised && (
-          <>
-            <div className="wcard-conf">
-              <ConfidenceBadge product={product} size="sm" onOpen={onOpenConfidence} />
-              <ConfidenceReason product={product} text={entry.confidenceReason} />
-            </div>
-            <div className="wcard-saved">{savedLabel(entry.savedDate)}</div>
-          </>
-        )}
+        <div className="wcard-conf">
+          <ConfidenceBadge product={product} size="sm" onOpen={onOpenConfidence} />
+          <div className="wcard-conf-copy">
+            {rank && (
+              <span className="wcard-rank">
+                #{rank.position} of {rank.total} in {rank.category}
+              </span>
+            )}
+            <ConfidenceReason product={product} text={entry.confidenceReason} />
+          </div>
+        </div>
+        <div className="wcard-saved">{savedLabel(entry.savedDate)}</div>
       </div>
     </>
   )

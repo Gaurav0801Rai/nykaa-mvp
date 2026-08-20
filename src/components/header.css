@@ -93,3 +93,7 @@
   color: var(--ink-strong);
   border-bottom-color: var(--ink-strong);
 }
+
+/* real icons rather than single glyph characters */
+.icon-btn { display: grid; place-items: center; }
+.icon-btn svg { width: 21px; height: 21px; display: block; }

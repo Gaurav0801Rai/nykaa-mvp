@@ -96,11 +96,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <footer className="foot">
-        <p>Nykaa Fashion — local mockup</p>
-        <span>Static prototype · no live checkout</span>
-      </footer>
     </div>
   )
 }

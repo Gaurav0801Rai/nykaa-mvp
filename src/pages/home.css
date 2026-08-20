@@ -78,12 +78,3 @@
 }
 .dept-meta span { font-size: 10.5px; color: var(--muted); }
 
-.foot {
-  margin-top: 24px;
-  padding: 22px 16px 30px;
-  background: var(--bg-soft);
-  border-top: 1px solid var(--line);
-  text-align: center;
-}
-.foot p { margin: 0 0 4px; font-size: 12px; font-weight: 600; }
-.foot span { font-size: 11px; color: var(--muted); }

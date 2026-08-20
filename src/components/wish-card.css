@@ -73,7 +73,17 @@
   gap: 8px;
   margin-top: 7px;
 }
-.wcard-conf .creason { flex: 1; }
+.wcard-conf-copy { flex: 1; min-width: 0; }
+
+/* where this item stands against the others in its own category */
+.wcard-rank {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--ink-strong);
+  letter-spacing: 0.2px;
+  margin-bottom: 2px;
+}
 
 .wcard-saved { margin-top: 5px; font-size: 10px; color: var(--muted); }
 

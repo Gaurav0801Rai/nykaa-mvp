@@ -33,142 +33,120 @@ a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 img { display: block; max-width: 100%; }
 
-/* ---------- Desktop: show the mobile viewport inside a phone cutout ---------- */
+/* ---------- The app always runs inside the device ---------- */
+/* On desktop and on a real phone alike: a Galaxy S20 Ultra shell on black,
+   scaled to fit whatever screen it is on. The app itself always lays out
+   against a true 412 x 915 viewport, so no screen ever reflows. */
 .stage {
-  min-height: 100vh;
-  background: var(--bg);
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.stage-inner { display: flex; align-items: center; justify-content: center; }
+
+/* Sized by JS to the scaled device footprint, so it is always an in-bounds
+   box that centres normally. */
+.phone-fit { position: relative; flex: none; }
+
+.phone-shell {
+  --bezel: 11px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 434px;
+  height: 937px;
+  background: #0b0c0e;
+  border-radius: 44px;
+  padding: var(--bezel);
+  box-shadow:
+    0 0 0 2px #23262b,
+    0 0 0 3.5px #4a4f57,
+    0 24px 70px rgba(0, 0, 0, 0.8);
+  transform: scale(var(--phone-scale, 1));
+  transform-origin: top left;
+}
+
+/* side buttons */
+.phone-shell::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 172px;
+  width: 4px;
+  height: 96px;
+  background: #34383f;
+  border-radius: 0 3px 3px 0;
+}
+.phone-shell::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 200px;
+  width: 4px;
+  height: 52px;
+  background: #34383f;
+  border-radius: 3px 0 0 3px;
 }
 
 .phone {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
   background: var(--bg);
+  border-radius: 34px;
+  overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Device status bar. Screen content starts below it, so the punch-hole never
+   sits on top of the app. */
+.phone-status {
+  height: 30px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #fff;
+  color: var(--ink-strong);
+  position: relative;
+  z-index: 60;
+}
+.phone-time { font-size: 12px; font-weight: 600; letter-spacing: 0.2px; }
+
+/* S20 Ultra has a centred punch-hole, not a notch */
+.phone-camera {
+  position: absolute;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 11px;
+  height: 11px;
+  background: #05060a;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.4);
+}
+
+.phone-glyphs { display: flex; align-items: center; gap: 5px; }
+.phone-glyphs svg { height: 11px; width: auto; fill: currentColor; display: block; }
+
+/* The screen. A flex column so short pages still push the tab bar to the
+   bottom of the device instead of letting it ride up under the content. */
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
-
-@media (min-width: 900px) {
-  /* The stage is pinned: the device never scrolls or shifts, only the screen
-     inside it does. Plain black behind it, nothing else on the page. */
-  .stage {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: grid;
-    place-items: center;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .stage-inner { display: flex; align-items: center; justify-content: center; }
-
-  /* Sized by JS to the scaled device footprint, so it always fits the window
-     and centres normally. */
-  .phone-fit { position: relative; flex: none; }
-
-  /* Galaxy S20 Ultra — 412 x 915 CSS px (1440 x 3200 at 3.5x), 20:9.
-     Height-driven so the whole device fits any laptop screen. */
-  .phone-shell {
-    --bezel: 11px;
-    /* True Galaxy S20 Ultra viewport: 412 x 915 CSS px (1440 x 3200 at 3.5x).
-       JS sets --phone-scale so the whole device fits the window without ever
-       changing the viewport the app lays out against. */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 434px;
-    height: 937px;
-    transform: scale(var(--phone-scale, 1));
-    transform-origin: top left;
-    background: #0b0c0e;
-    border-radius: 44px;
-    padding: var(--bezel);
-    box-shadow:
-      0 0 0 2px #23262b,
-      0 0 0 3.5px #4a4f57,
-      0 24px 70px rgba(0, 0, 0, 0.8);
-    position: relative;
-    flex: none;
-  }
-
-  /* side buttons */
-  .phone-shell::after {
-    content: '';
-    position: absolute;
-    right: -4px;
-    top: 172px;
-    width: 4px;
-    height: 96px;
-    background: #34383f;
-    border-radius: 0 3px 3px 0;
-  }
-  .phone-shell::before {
-    content: '';
-    position: absolute;
-    left: -4px;
-    top: 200px;
-    width: 4px;
-    height: 52px;
-    background: #34383f;
-    border-radius: 3px 0 0 3px;
-  }
-
-  .phone {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    border-radius: 34px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  /* Device status bar. The screen content starts below it, so the centred
-     punch-hole never sits on top of the app. */
-  .phone-status {
-    height: 30px;
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    background: #fff;
-    color: var(--ink-strong);
-    position: relative;
-    z-index: 60;
-  }
-  .phone-time { font-size: 12px; font-weight: 600; letter-spacing: 0.2px; }
-
-  /* S20 Ultra has a centred punch-hole, not a notch */
-  .phone-camera {
-    position: absolute;
-    top: 9px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 11px;
-    height: 11px;
-    background: #05060a;
-    border-radius: 999px;
-    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.4);
-  }
-
-  .phone-glyphs { display: flex; align-items: center; gap: 5px; }
-  .phone-glyphs svg { height: 11px; width: auto; fill: currentColor; display: block; }
-
-  .phone { display: flex; flex-direction: column; }
-
-  .scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-}
-
-/* mobile: normal page scroll */
-@media (max-width: 899px) {
-  .phone-status { display: none; }
-  .scroll { min-height: 100vh; }
-}
+.scroll > main { flex: 1; display: flex; flex-direction: column; }
+.scroll > main > * { flex: 1; }
 
 .scroll::-webkit-scrollbar { width: 0; height: 0; }
 

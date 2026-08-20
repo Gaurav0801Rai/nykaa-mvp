@@ -22,3 +22,29 @@
 .tab-label { font-size: 10px; font-weight: 500; }
 .tab.is-active { color: var(--ink-strong); }
 .tab.is-active .tab-label { font-weight: 700; }
+
+/* the wishlist tab is the point of this build, so it carries its saved count
+   and stays tinted even when another tab is selected */
+.tab-ico { position: relative; display: grid; place-items: center; }
+.tab-ico svg { width: 17px; height: 17px; display: block; }
+
+.tab--wishlist { color: var(--pink); }
+.tab--wishlist.is-active { color: var(--pink); }
+
+.tab-dot {
+  position: absolute;
+  top: -6px;
+  left: 10px;
+  background: var(--pink);
+  color: #fff;
+  font-size: 8.5px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 3px;
+  box-shadow: 0 0 0 1.5px #fff;
+}

@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { catalog } from '../data/catalog'
 import { useStore } from '../state/store'
+import { BagIcon, HeartIcon } from './icons'
 import './header.css'
 
 export default function Header({ query, onQuery }) {
@@ -20,9 +21,12 @@ export default function Header({ query, onQuery }) {
           <span className="logo-sub">FASHION</span>
         </Link>
         <div className="hdr-icons">
-          <Link to="/wishlist" aria-label="Wishlist" className="icon-btn">♡</Link>
+          <Link to="/wishlist" aria-label="Wishlist" className="icon-btn">
+            <HeartIcon />
+          </Link>
           <Link to="/bag" aria-label="Bag" className="icon-btn">
-            ⛶<span className="bag-dot">{bagCount}</span>
+            <BagIcon />
+            {bagCount > 0 && <span className="bag-dot">{bagCount}</span>}
           </Link>
         </div>
       </div>

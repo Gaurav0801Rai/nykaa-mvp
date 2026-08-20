@@ -9,9 +9,9 @@ const DEVICE_H = 937
 const clock = () =>
   new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: false })
 
-// Below 900px this is a plain passthrough — on a phone, the phone IS the
-// device, so the app runs full screen with no frame around it. Above 900px it
-// renders inside an S20 Ultra cutout on black.
+// The app always runs inside the device shell — on a laptop and on a real
+// phone alike. On a phone the shell fills the screen with a thin black
+// surround; on a desktop it sits centred on black.
 export default function PhoneFrame({ children }) {
   const scrollRef = useRef(null)
   const { pathname } = useLocation()
@@ -28,12 +28,18 @@ export default function PhoneFrame({ children }) {
   }, [])
 
   useEffect(() => {
-    const fit = () =>
+    const fit = () => {
+      // a phone gets a thin surround so the device fills the screen; a desktop
+      // gets a little more room to read as a device sitting on a background
+      const inset = window.innerWidth < 900 ? 8 : 24
       setScale(
-        window.innerWidth < 900
-          ? 0
-          : Math.min(1, (window.innerHeight - 24) / DEVICE_H, (window.innerWidth - 24) / DEVICE_W)
+        Math.min(
+          1,
+          (window.innerHeight - inset) / DEVICE_H,
+          (window.innerWidth - inset) / DEVICE_W
+        )
       )
+    }
     fit()
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)
@@ -44,7 +50,7 @@ export default function PhoneFrame({ children }) {
     window.scrollTo(0, 0)
   }, [pathname])
 
-  // scale 0 means "no frame"
+  // scale is 0 only on the very first paint, before the measure runs
   const framed = scale > 0
 
   // The wrapper carries the SCALED size, so it is an ordinary in-bounds box.

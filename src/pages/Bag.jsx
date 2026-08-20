@@ -5,6 +5,7 @@ import { sizesFor } from '../lib/sizing'
 import { useStore } from '../state/store'
 import useCrossSell from '../lib/useCrossSell'
 import ScreenHeader from '../components/ScreenHeader'
+import { HeartIcon } from '../components/icons'
 import ConfidenceBadge from '../components/ConfidenceBadge'
 import ConfidenceSheet from '../components/ConfidenceSheet'
 import './bag.css'
@@ -70,7 +71,7 @@ export default function Bag() {
         showBag={false}
         actions={
           <Link to="/wishlist" className="shead-icon" aria-label="Wishlist">
-            {'♡'}
+            <HeartIcon />
           </Link>
         }
       />
@@ -99,9 +100,10 @@ export default function Bag() {
       )}
 
       {bagLines.length === 0 ? (
-        <p className="bag-empty">
-          Nothing here yet. Your saved items are below — add one straight from the strip.
-        </p>
+        <div className="bag-empty">
+          <strong>Your cart is empty</strong>
+          <p>Add something from your saved items below.</p>
+        </div>
       ) : (
         <ul className="bag-list">
           {bagLines.map(({ item, product }) => {

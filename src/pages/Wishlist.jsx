@@ -49,6 +49,27 @@ export default function Wishlist() {
       .sort((a, b) => b.items.length - a.items.length)
   }, [filtered])
 
+  // Every item is ranked against the others in its OWN category, so "#2 of 7
+  // in Shirts" compares shirts with shirts and never with sandals.
+  const ranks = useMemo(() => {
+    const groups = new Map()
+    for (const x of available) {
+      const key = productType(x.product)
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key).push(x)
+    }
+    const map = new Map()
+    for (const [category, items] of groups) {
+      const ordered = [...items].sort(
+        (a, b) => confidence(b.product).score - confidence(a.product).score
+      )
+      ordered.forEach((x, i) =>
+        map.set(x.product.id, { position: i + 1, total: ordered.length, category })
+      )
+    }
+    return map
+  }, [available])
+
   // Lazy capture: an item saved 14+ days ago that is still untagged gets a
   // small inline prompt. Never blocking, never attached to the save action.
   const stalePrompt = useMemo(() => {
@@ -214,9 +235,7 @@ export default function Wishlist() {
               key={product.id}
               entry={entry}
               product={product}
-              /* narrowing to one category is a comparison, so the scores earn
-                 their place; the unfiltered list stays the plain baseline */
-              organised={!!activeCategory}
+              rank={ranks.get(product.id)}
               onOpenConfidence={setSheetProduct}
               onShare={setShareProduct}
               onTag={setTagProduct}
@@ -240,7 +259,7 @@ export default function Wishlist() {
                   key={product.id}
                   entry={entry}
                   product={product}
-                  organised
+                  rank={ranks.get(product.id)}
                   onOpenConfidence={setSheetProduct}
                   onShare={setShareProduct}
                   onTag={setTagProduct}
