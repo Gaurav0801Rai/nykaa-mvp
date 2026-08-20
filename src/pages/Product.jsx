@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { Link, useParams, useNavigate, Navigate } from 'react-router-dom'
 import { getProduct, relatedProducts, formatINR } from '../data/catalog'
+import { confidence } from '../lib/confidence'
+import { useStore } from '../state/store'
 import ProductCard from '../components/ProductCard'
+import ConfidenceBadge, { ConfidenceReason } from '../components/ConfidenceBadge'
+import ConfidenceSheet from '../components/ConfidenceSheet'
 import './product.css'
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
@@ -10,12 +14,41 @@ export default function Product() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [size, setSize] = useState(null)
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const { entries, isWished, inBag, dispatch, toast } = useStore()
 
   const product = getProduct(id)
   if (!product) return <Navigate to="/" replace />
 
   const related = relatedProducts(product)
   const onSale = product.salePrice != null && product.salePrice < product.price
+
+  const { stats } = confidence(product)
+  const wished = isWished(product.id)
+  const alreadyInBag = inBag(product.id)
+
+  // an item held on the unavailable list cannot be added to the bag
+  const entry = entries.find((x) => x.product.id === product.id)?.entry
+  const unavailable = entry && entry.availability !== 'in-stock'
+
+  const toggleWish = () => {
+    if (wished) {
+      dispatch({ type: 'wish/remove', id: product.id })
+      dispatch({ type: 'toast/show', text: 'Removed from wishlist', undo: true })
+    } else {
+      dispatch({ type: 'wish/add', product })
+      toast('Saved to wishlist')
+    }
+  }
+
+  const addToBag = () => {
+    if (alreadyInBag) {
+      navigate('/bag')
+      return
+    }
+    dispatch({ type: 'bag/add', id: product.id, size })
+    toast('Added to bag' + (size ? ' - size ' + size : ''))
+  }
 
   return (
     <div className="pdp">
@@ -41,6 +74,24 @@ export default function Product() {
           )}
         </div>
         <p className="pdp-tax">Inclusive of all taxes</p>
+
+        <div className="pdp-conf">
+          <div className="pdp-rating">
+            <span className="pdp-stars">{stats.avgRating.toFixed(1)}★</span>
+            <span className="pdp-rating-n">
+              {stats.reviewCount.toLocaleString('en-IN')} reviews
+            </span>
+          </div>
+          <div className="pdp-conf-badge">
+            <ConfidenceBadge product={product} onOpen={() => setSheetOpen(true)} />
+            <div className="pdp-conf-copy">
+              <button type="button" className="pdp-conf-label" onClick={() => setSheetOpen(true)}>
+                Confidence Score
+              </button>
+              <ConfidenceReason product={product} text={entry?.confidenceReason} />
+            </div>
+          </div>
+        </div>
 
         <div className="pdp-tags">
           <Link className="tag" to={`/c/${product.gender.toLowerCase()}`}>
@@ -89,9 +140,27 @@ export default function Product() {
       )}
 
       <div className="pdp-actions">
-        <button className="btn ghost">♡ Wishlist</button>
-        <button className="btn solid">Add to bag</button>
+        <button type="button" className="btn ghost" onClick={toggleWish}>
+          {wished ? '♥ Wishlisted' : '♡ Wishlist'}
+        </button>
+        <button type="button" className="btn solid" onClick={addToBag} disabled={unavailable}>
+          {unavailable
+            ? entry.availability === 'out-of-stock'
+              ? 'Out of stock'
+              : 'Your size unavailable'
+            : alreadyInBag
+              ? 'Go to bag'
+              : 'Add to bag'}
+        </button>
       </div>
+
+      {sheetOpen && (
+        <ConfidenceSheet
+          product={product}
+          reason={entry?.confidenceReason}
+          onClose={() => setSheetOpen(false)}
+        />
+      )}
     </div>
   )
 }

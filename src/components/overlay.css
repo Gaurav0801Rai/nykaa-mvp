@@ -1,0 +1,15 @@
+/* Portal host for sheets and toasts.
+   On mobile the phone IS the viewport, so fixed positioning is right. On
+   desktop the app lives inside the phone cutout, so overlays anchor to
+   .phone instead of the browser window. */
+.sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+.sheet-root > * { pointer-events: auto; }
+
+@media (min-width: 900px) {
+  .sheet-root { position: absolute; }
+}

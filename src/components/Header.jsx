@@ -1,9 +1,11 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { GENDERS, catalog } from '../data/catalog'
+import { catalog } from '../data/catalog'
+import { useStore } from '../state/store'
 import './header.css'
 
 export default function Header({ query, onQuery }) {
   const navigate = useNavigate()
+  const { bagCount } = useStore()
 
   const submit = (e) => {
     e.preventDefault()
@@ -18,10 +20,10 @@ export default function Header({ query, onQuery }) {
           <span className="logo-sub">FASHION</span>
         </Link>
         <div className="hdr-icons">
-          <button aria-label="Wishlist" className="icon-btn">♡</button>
-          <button aria-label="Bag" className="icon-btn">
-            ⛶<span className="bag-dot">0</span>
-          </button>
+          <Link to="/wishlist" aria-label="Wishlist" className="icon-btn">♡</Link>
+          <Link to="/bag" aria-label="Bag" className="icon-btn">
+            ⛶<span className="bag-dot">{bagCount}</span>
+          </Link>
         </div>
       </div>
 

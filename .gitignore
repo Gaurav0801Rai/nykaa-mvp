@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# env — real keys must never be committed (.env.local is covered by *.local)
+.env
+.env.*
+!.env.example

@@ -1,0 +1,82 @@
+/* Shared sub-screen header — matches the PDP back control and .cat-head type. */
+.sub-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 12px 10px;
+}
+.sub-back {
+  border: 0;
+  background: none;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--ink-strong);
+  padding: 0 6px 0 0;
+  margin-top: -2px;
+}
+.sub-head h1 { font-size: 19px; margin: 0; letter-spacing: -0.4px; }
+.sub-head p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+
+.col-section { border-bottom: 1px solid var(--line); }
+
+.col-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 12px;
+  border: 0;
+  background: #fff;
+  text-align: left;
+}
+.col-head-name { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
+.col-head-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg-soft);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.col-head-caret {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--muted);
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
+}
+.col-head-caret.is-open { transform: rotate(0deg); }
+
+.col-empty { padding: 0 12px 16px; font-size: 12px; color: var(--muted); }
+
+.col-item { position: relative; }
+
+.col-occ {
+  margin-top: 6px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 5px 8px;
+  text-align: center;
+}
+
+.col-picker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.col-picker .chip { font-size: 10.5px; padding: 5px 9px; }

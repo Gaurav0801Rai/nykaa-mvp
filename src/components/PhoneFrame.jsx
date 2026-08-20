@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import './overlay.css'
 
 // On mobile this is a plain passthrough. On desktop (>=900px) the CSS turns
 // .phone-shell into a device cutout with the mobile viewport scrolling inside.
@@ -31,6 +32,8 @@ export default function PhoneFrame({ children }) {
             <div className="scroll" ref={scrollRef}>
               {children}
             </div>
+            {/* sheets and toasts portal in here so they stay inside the phone */}
+            <div className="sheet-root" />
           </div>
         </div>
       </div>
