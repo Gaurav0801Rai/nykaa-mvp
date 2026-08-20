@@ -48,97 +48,110 @@ img { display: block; max-width: 100%; }
 }
 
 @media (min-width: 900px) {
+  /* The stage is pinned: the device never scrolls or shifts, only the screen
+     inside it does. Plain black behind it, nothing else on the page. */
   .stage {
-    background: radial-gradient(circle at 50% 0%, #2b2f36 0%, #16181c 60%, #101114 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 16px;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    overflow: hidden;
   }
 
-  .stage-inner {
-    display: flex;
-    align-items: center;
-    gap: 56px;
-  }
+  .stage-inner { display: flex; align-items: center; justify-content: center; }
 
-  .stage-copy {
-    color: #fff;
-    max-width: 320px;
-  }
-  .stage-copy h1 {
-    font-size: 30px;
-    line-height: 1.2;
-    margin: 0 0 14px;
-    letter-spacing: -0.5px;
-  }
-  .stage-copy p {
-    color: #a8adb6;
-    font-size: 14px;
-    line-height: 1.6;
-    margin: 0 0 10px;
-  }
-  .stage-badge {
-    display: inline-block;
-    font-size: 11px;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: #fff;
-    border: 1px solid #3a3f47;
-    border-radius: 999px;
-    padding: 6px 12px;
-    margin-bottom: 18px;
-  }
-
-  /* the phone cutout */
+  /* Galaxy S20 Ultra — 412 x 915 CSS px (1440 x 3200 at 3.5x), 20:9.
+     Height-driven so the whole device fits any laptop screen. */
   .phone-shell {
-    width: calc(var(--frame-w) + 24px);
-    height: 872px;
+    --bezel: 11px;
+    /* True Galaxy S20 Ultra viewport: 412 x 915 CSS px (1440 x 3200 at 3.5x).
+       JS sets --phone-scale so the whole device fits the window without ever
+       changing the viewport the app lays out against. */
+    width: 434px;
+    height: 937px;
+    transform: scale(var(--phone-scale, 1));
+    transform-origin: center center;
     background: #0b0c0e;
-    border-radius: 56px;
-    padding: 12px;
+    border-radius: 44px;
+    padding: var(--bezel);
     box-shadow:
-      0 0 0 2px #303540,
-      0 40px 80px rgba(0, 0, 0, 0.55);
+      0 0 0 2px #23262b,
+      0 0 0 3.5px #4a4f57,
+      0 24px 70px rgba(0, 0, 0, 0.8);
     position: relative;
     flex: none;
   }
 
+  /* side buttons */
   .phone-shell::after {
-    /* side button */
     content: '';
     position: absolute;
-    right: -3px;
-    top: 190px;
-    width: 3px;
-    height: 84px;
-    background: #2c313a;
+    right: -4px;
+    top: 172px;
+    width: 4px;
+    height: 96px;
+    background: #34383f;
     border-radius: 0 3px 3px 0;
+  }
+  .phone-shell::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 200px;
+    width: 4px;
+    height: 52px;
+    background: #34383f;
+    border-radius: 3px 0 0 3px;
   }
 
   .phone {
-    width: var(--frame-w);
+    width: 100%;
     height: 100%;
     min-height: 0;
-    border-radius: 44px;
+    border-radius: 34px;
     overflow: hidden;
     position: relative;
   }
 
-  .phone-notch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 132px;
-    height: 26px;
-    background: #0b0c0e;
-    border-radius: 0 0 16px 16px;
+  /* Device status bar. The screen content starts below it, so the centred
+     punch-hole never sits on top of the app. */
+  .phone-status {
+    height: 30px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: #fff;
+    color: var(--ink-strong);
+    position: relative;
     z-index: 60;
   }
+  .phone-time { font-size: 12px; font-weight: 600; letter-spacing: 0.2px; }
+
+  /* S20 Ultra has a centred punch-hole, not a notch */
+  .phone-camera {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 11px;
+    height: 11px;
+    background: #05060a;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.4);
+  }
+
+  .phone-glyphs { display: flex; align-items: center; gap: 5px; }
+  .phone-glyphs svg { height: 11px; width: auto; fill: currentColor; display: block; }
+
+  .phone { display: flex; flex-direction: column; }
 
   .scroll {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -146,7 +159,7 @@ img { display: block; max-width: 100%; }
 
 /* mobile: normal page scroll */
 @media (max-width: 899px) {
-  .phone-notch, .stage-copy { display: none; }
+  .phone-status { display: none; }
   .scroll { min-height: 100vh; }
 }
 

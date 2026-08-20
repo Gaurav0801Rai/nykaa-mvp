@@ -6,8 +6,13 @@
 // task's key, the caller falls back to its deterministic path instead.
 
 const ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions'
-const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile'
-const TIMEOUT_MS = 7000
+
+// Groq retired the llama-3.x-versatile ids; this is a current one. The gpt-oss
+// models emit a separate reasoning channel that counts against max_tokens, so
+// budgets here are generous and reasoning_effort is pinned low — truncated
+// output would fail JSON validation and cost us the whole response.
+const MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b'
+const TIMEOUT_MS = 12000
 
 export const KEYS = {
   confidence: 'GROQ_API_KEY_CONFIDENCE',
@@ -20,7 +25,7 @@ export const KEYS = {
  * missing key, timeout, rate limit, non-JSON body, malformed shape.
  * Callers treat null as "use the deterministic fallback".
  */
-export async function groqJSON(task, { system, user, maxTokens = 900 }) {
+export async function groqJSON(task, { system, user, maxTokens = 3000 }) {
   const key = process.env[KEYS[task]]
   if (!key) return null
 
@@ -39,6 +44,8 @@ export async function groqJSON(task, { system, user, maxTokens = 900 }) {
         temperature: 0.3,
         max_tokens: maxTokens,
         response_format: { type: 'json_object' },
+        // only the gpt-oss family accepts this; other models reject it
+        ...(MODEL.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {}),
         messages: [
           { role: 'system', content: system },
           { role: 'user', content: user },

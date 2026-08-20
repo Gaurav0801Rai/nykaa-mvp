@@ -5,6 +5,8 @@
 // malformed JSON. Callers always have a deterministic path to fall back to, so
 // the UI never breaks and never waits on the model.
 
+import { pairLabel } from './crosssell'
+
 const TIMEOUT_MS = 8000
 
 // A 404 means the routes are not deployed at all — plain `vite dev` rather
@@ -77,7 +79,11 @@ export async function fetchOccasions(products, medianPrice) {
 export async function fetchCrossSellPicks(bagProducts, candidates) {
   if (!bagProducts.length || !candidates.length) return []
   const data = await postJSON('/api/crosssell', {
-    bag: bagProducts.map((p) => ({ name: p.name, category: p.category })),
+    bag: bagProducts.map((p) => ({
+      label: pairLabel(p),
+      name: p.name,
+      category: p.category,
+    })),
     candidates: candidates.map(({ product, stats }) => ({
       id: product.id,
       name: product.name,

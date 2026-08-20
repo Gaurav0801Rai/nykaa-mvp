@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom'
 import { useStore, daysAgo } from '../state/store'
 import { confidence } from '../lib/confidence'
 import { PICKER_OPTIONS } from '../lib/occasion'
+import { productType } from '../lib/productType'
 import { sizesFor } from '../lib/sizing'
 import useEnrichment from '../lib/useEnrichment'
+import ScreenHeader from '../components/ScreenHeader'
 import WishCard from '../components/WishCard'
 import ConfidenceSheet from '../components/ConfidenceSheet'
 import ShareSheet from '../components/ShareSheet'
+import OccasionSheet from '../components/OccasionSheet'
 import './wishlist.css'
 
 export default function Wishlist() {
@@ -17,6 +20,7 @@ export default function Wishlist() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [sheetProduct, setSheetProduct] = useState(null)
   const [shareProduct, setShareProduct] = useState(null)
+  const [tagProduct, setTagProduct] = useState(null)
   const [selection, setSelection] = useState(null)
   const [promptDismissed, setPromptDismissed] = useState(false)
 
@@ -24,7 +28,7 @@ export default function Wishlist() {
   useEnrichment(available, dispatch)
 
   const filtered = useMemo(
-    () => (activeCategory ? available.filter((x) => x.product.category === activeCategory) : available),
+    () => (activeCategory ? available.filter((x) => productType(x.product) === activeCategory) : available),
     [available, activeCategory]
   )
 
@@ -33,8 +37,9 @@ export default function Wishlist() {
   const sections = useMemo(() => {
     const map = new Map()
     for (const x of filtered) {
-      if (!map.has(x.product.category)) map.set(x.product.category, [])
-      map.get(x.product.category).push(x)
+      const key = productType(x.product)
+      if (!map.has(key)) map.set(key, [])
+      map.get(key).push(x)
     }
     return [...map.entries()]
       .map(([name, items]) => ({
@@ -96,10 +101,21 @@ export default function Wishlist() {
 
   return (
     <div className="wl">
-      <div className="cat-head">
-        <h1>Wishlist</h1>
-        <p>{available.length} items saved</p>
-      </div>
+      <ScreenHeader
+        title="Wishlist"
+        subtitle={available.length + ' items'}
+        actions={
+          <button
+            type="button"
+            className={'shead-icon' + (selectMode ? ' is-on' : '')}
+            onClick={() => setSelection(selectMode ? null : [])}
+            aria-label={selectMode ? 'Exit selection' : 'Select items'}
+            aria-pressed={selectMode}
+          >
+            {'☷'}
+          </button>
+        }
+      />
 
       <div className="row-scroll chips">
         <Link to="/collections" className="chip">
@@ -199,6 +215,7 @@ export default function Wishlist() {
               entry={entry}
               product={product}
               onShare={setShareProduct}
+              onTag={setTagProduct}
               selectMode={selectMode}
               selected={selectedIds.includes(product.id)}
               onToggleSelect={toggleSelect}
@@ -222,6 +239,7 @@ export default function Wishlist() {
                   organised
                   onOpenConfidence={setSheetProduct}
                   onShare={setShareProduct}
+                  onTag={setTagProduct}
                   selectMode={selectMode}
                   selected={selectedIds.includes(product.id)}
                   onToggleSelect={toggleSelect}
@@ -266,6 +284,13 @@ export default function Wishlist() {
       )}
       {shareProduct && (
         <ShareSheet product={shareProduct} onClose={() => setShareProduct(null)} />
+      )}
+      {tagProduct && (
+        <OccasionSheet
+          product={tagProduct}
+          entry={available.find((x) => x.product.id === tagProduct.id)?.entry}
+          onClose={() => setTagProduct(null)}
+        />
       )}
     </div>
   )

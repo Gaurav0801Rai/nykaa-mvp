@@ -9,9 +9,12 @@ npm run dev
 
 ## Layout behaviour
 - **< 900px** — the app renders full-bleed, as a normal mobile page.
-- **≥ 900px** — the mobile viewport is centred inside a phone cutout on a dark
-  stage, with a short caption beside it. Nothing about the app itself changes;
-  the frame is a desktop-only affordance (`src/components/PhoneFrame.jsx`).
+- **≥ 900px** — the app runs inside a fixed Galaxy S20 Ultra frame, centred on
+  plain black with nothing else on the page. The device renders at a true
+  412 x 915 CSS viewport (1440 x 3200 at 3.5x) and is scaled to fit the window,
+  so the app always lays out against real S20 Ultra dimensions rather than a
+  squeezed one. The status bar and punch-hole are device chrome, not app UI
+  (`src/components/PhoneFrame.jsx`).
 
 ## Data
 `src/data/products.json` — 2,106 products scraped from the live site, grouped
@@ -124,16 +127,29 @@ computed once per product and cached on the wishlist entry; only cross-sell
 recomputes, and only when the bag changes, debounced with the previous result
 left on screen so the strip never flickers.
 
+### Model
+
+`GROQ_MODEL` defaults to **`openai/gpt-oss-120b`**. Groq retired the
+`llama-3.x-*-versatile` ids, so check `GET /v1/models` before pinning anything
+else. Two things matter for this family: the reasoning channel counts against
+`max_tokens` (budgets here are 2500-3000, and truncated output fails JSON
+validation outright), and `reasoning_effort` is pinned to `low` for latency.
+Measured round trips on an 8-item batch: ~1.4s.
+
 ### Running with the routes
 
 ```bash
 cp .env.example .env.local   # then fill in the three keys
-npx vercel dev
+npm run dev
 ```
 
-`npm run dev` runs the Vite server alone — the `/api` routes are not served, so
-the app runs on its deterministic paths. That is a supported mode, not a broken
-one.
+`vite.config.js` mounts the same `api/` handlers on the dev server, so the Groq
+routes work locally without the Vercel CLI. Keys are read with `loadEnv` in the
+Node process and are never `VITE_`-prefixed, so they cannot reach the browser.
+In production Vercel runs the identical files as serverless functions.
+
+With no keys set the routes still answer, with empty results, and the app runs
+entirely on its deterministic paths — a supported mode, not a broken one.
 
 State lives in `src/state/store.jsx` and persists to `sessionStorage`, so the
 wishlist, bag, occasion tags and notify-me flags survive navigation within a

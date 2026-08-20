@@ -3,6 +3,7 @@ import { getProduct, products as allProducts } from '../data/catalog'
 import { buildSeedWishlist } from '../data/seedWishlist'
 import { inferOccasion } from '../lib/occasion'
 import { preferredSize } from '../lib/sizing'
+import { productType } from '../lib/productType'
 
 const KEY = 'nf-state-v1'
 
@@ -185,9 +186,10 @@ export function StoreProvider({ children }) {
     // never appears and nothing is ever "Uncategorized".
     const categories = []
     for (const x of available) {
-      let c = categories.find((k) => k.name === x.product.category)
+      const name = productType(x.product)
+      let c = categories.find((k) => k.name === name)
       if (!c) {
-        c = { name: x.product.category, count: 0, cover: x.product.image }
+        c = { name, count: 0, cover: x.product.image }
         categories.push(c)
       }
       c.count++

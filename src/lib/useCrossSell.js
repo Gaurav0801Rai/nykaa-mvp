@@ -72,6 +72,18 @@ export default function useCrossSell(bagProducts, wishEntries, revision = '', li
       // nothing usable survived validation — keep the deterministic ranking
       if (!items.length) return
 
+      // The model is deliberately strict and often returns only a handful, so
+      // top the strip up from the deterministic pairing to keep it scrollable.
+      // Its picks stay first, in its order.
+      if (items.length < limit) {
+        const taken = new Set(items.map((i) => i.product.id))
+        for (const extra of base.items) {
+          if (taken.has(extra.product.id)) continue
+          items.push(extra)
+          if (items.length >= limit) break
+        }
+      }
+
       setResult({
         mode: 'A',
         heading: 'From your wishlist',

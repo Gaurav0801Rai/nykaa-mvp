@@ -19,13 +19,16 @@ Pair on how the items are worn together, for example:
 - watch -> belt, formal shoes
 
 For each pick write a short rationale naming the bag item it goes with, then
-the item's rating and buyer count, e.g. "Pairs well with black denim — 4.5 stars from 210 buyers".
+the item's rating and buyer count, e.g. "Pairs well with black denim - 4.5 stars from 210 buyers".
 
 Rules:
+- Refer to the bag item by its short "label", never by its full product title.
+- Keep the whole rationale under 90 characters.
 - Only return candidate ids that were given to you. Never invent an id.
 - Never mention price, discounts, offers, coupons or savings.
-- Skip anything that does not genuinely pair; returning fewer is fine.
-- Order best pairing first, at most 10.
+- Skip anything that does not genuinely pair.
+- Order best pairing first. Return up to 10, and aim for at least 6 when that
+  many candidates plausibly pair.
 
 Return JSON: {"picks":[{"id":"<candidate id>","rationale":"<line>"}]}`
 
@@ -44,6 +47,7 @@ export default async function handler(req, res) {
 
   const user = JSON.stringify({
     bag: bag.map((p) => ({
+      label: asString(p?.label, 40),
       name: asString(p?.name, 90),
       category: asString(p?.category, 40),
     })),
@@ -56,7 +60,7 @@ export default async function handler(req, res) {
     })),
   })
 
-  const parsed = await groqJSON('crosssell', { system: SYSTEM, user, maxTokens: 1100 })
+  const parsed = await groqJSON('crosssell', { system: SYSTEM, user, maxTokens: 3000 })
 
   const picks = []
   const seen = new Set()

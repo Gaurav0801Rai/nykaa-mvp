@@ -22,9 +22,14 @@ export default function App() {
   // The PDP is a full-bleed screen — it hides the chrome like the real app.
   const isPdp = pathname.startsWith('/p/')
 
+  // These screens bring their own header. The search bar and the
+  // Women / Men / Kids / Home strip belong to browsing, not to your saved
+  // items or your bag, so they are not rendered here.
+  const ownHeader = ['/wishlist', '/collections', '/unavailable', '/bag'].includes(pathname)
+
   return (
     <PhoneFrame>
-      {!isPdp && <Header query={query} onQuery={setQuery} />}
+      {!isPdp && !ownHeader && <Header query={query} onQuery={setQuery} />}
 
       <main>
         <Routes>

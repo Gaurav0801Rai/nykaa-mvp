@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useStore } from '../state/store'
 import { OCCASIONS, PICKER_OPTIONS, occasionLabel } from '../lib/occasion'
+import ScreenHeader from '../components/ScreenHeader'
 import ProductCard from '../components/ProductCard'
 import './collections.css'
 
@@ -9,7 +9,6 @@ const UNTAGGED = 'Not tagged yet'
 
 export default function Collections() {
   const { available, dispatch, toast } = useStore()
-  const navigate = useNavigate()
 
   const [grouping, setGrouping] = useState('occasion')
   const [collapsed, setCollapsed] = useState({})
@@ -51,15 +50,7 @@ export default function Collections() {
 
   return (
     <div className="col">
-      <div className="sub-head">
-        <button type="button" className="sub-back" onClick={() => navigate(-1)} aria-label="Go back">
-          {'‹'}
-        </button>
-        <div>
-          <h1>Collections</h1>
-          <p>{available.length} saved items grouped by occasion</p>
-        </div>
-      </div>
+      <ScreenHeader title="Collections" subtitle={available.length + ' saved items'} />
 
       <div className="wl-toggle">
         <button

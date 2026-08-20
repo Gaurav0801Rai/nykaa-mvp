@@ -1,0 +1,65 @@
+.shead {
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 11px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.shead-back {
+  border: 0;
+  background: none;
+  font-size: 19px;
+  line-height: 1;
+  color: var(--ink-strong);
+  padding: 2px 2px 2px 0;
+  flex: none;
+}
+
+.shead-titles { min-width: 0; flex: 1; display: flex; align-items: baseline; gap: 8px; }
+.shead-titles h1 {
+  font-size: 17px;
+  margin: 0;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+.shead-titles p {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.shead-actions { display: flex; align-items: center; gap: 4px; flex: none; }
+
+.shead-icon {
+  position: relative;
+  font-size: 17px;
+  color: var(--ink);
+  padding: 4px 6px;
+  line-height: 1;
+  border: 0;
+  background: none;
+  display: block;
+}
+.shead-icon.is-on { color: var(--pink); }
+
+.shead-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--pink);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  padding: 0 3px;
+}

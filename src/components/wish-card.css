@@ -11,28 +11,41 @@
   width: 100%;
 }
 
+.wcard .pcard-media { border-radius: 6px; }
 .wcard.is-selected { outline: 2px solid var(--ink-strong); outline-offset: 2px; }
 
-.wcard-tools {
+/* rating chip, bottom-left of the image */
+.wcard-rating {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink-strong);
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 3px 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+}
+
+/* one-tap add, bottom-right of the image */
+.wcard-add {
   position: absolute;
   right: 6px;
-  top: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.wcard-tools button {
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  border: 0;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-  font-size: 12px;
-  line-height: 1;
-  display: grid;
-  place-items: center;
+  bottom: 6px;
+  border: 1px solid var(--pink);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 5px 11px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+.wcard-add.is-done {
+  border-color: var(--line);
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .wcard-check {
@@ -52,6 +65,8 @@
 }
 .wcard-check.is-on { background: var(--ink-strong); border-color: var(--ink-strong); }
 
+.wcard-delivery { margin-top: 4px; font-size: 10px; color: var(--muted); }
+
 .wcard-conf {
   display: flex;
   align-items: flex-start;
@@ -60,20 +75,29 @@
 }
 .wcard-conf .creason { flex: 1; }
 
-.wcard-saved { margin-top: 6px; font-size: 10px; color: var(--muted); }
+.wcard-saved { margin-top: 5px; font-size: 10px; color: var(--muted); }
 
-.wcard-add {
+/* delete / set occasion / share */
+.wcard-tools {
+  display: flex;
   margin-top: 8px;
-  height: 30px;
+  border: 1px solid var(--line);
   border-radius: 6px;
-  border: 1px solid var(--ink-strong);
-  background: #fff;
-  color: var(--ink-strong);
-  font-size: 11.5px;
-  font-weight: 600;
-  width: 100%;
+  overflow: hidden;
 }
-.wcard-add.is-done { border-color: var(--line); color: var(--muted); }
+.wcard-tools button {
+  flex: 1;
+  height: 30px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+.wcard-tools button:last-child { border-right: 0; }
 
 .share-link {
   font-size: 11.5px;

@@ -1,19 +1,26 @@
 import { useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { formatINR } from '../data/catalog'
+import { confidence } from '../lib/confidence'
 import { sizesFor } from '../lib/sizing'
 import { useStore, savedLabel } from '../state/store'
 import ConfidenceBadge, { ConfidenceReason } from './ConfidenceBadge'
 import './wish-card.css'
 
-// The existing product card, plus the wishlist additions. The original card
-// layout and styling are untouched — the extras sit beneath it.
+// Deterministic delivery estimate so the date does not change between renders.
+const deliveryLabel = (id) => {
+  const days = 3 + (Number(String(id).slice(-2)) % 5)
+  const d = new Date(Date.now() + days * 86400000)
+  return 'Delivery by ' + d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
+}
+
 export default function WishCard({
   entry,
   product,
   organised = false,
   onOpenConfidence,
   onShare,
+  onTag,
   selectMode = false,
   selected = false,
   onToggleSelect,
@@ -26,6 +33,7 @@ export default function WishCard({
 
   const onSale = product.salePrice != null && product.salePrice < product.price
   const already = inBag(product.id)
+  const { stats } = confidence(product)
 
   const startPress = () => {
     moved.current = false
@@ -36,9 +44,13 @@ export default function WishCard({
   }
   const endPress = () => clearTimeout(timer.current)
 
-  const addToBag = (e) => {
+  const stop = (e) => {
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  const addToBag = (e) => {
+    stop(e)
     if (already) {
       navigate('/bag')
       return
@@ -49,16 +61,9 @@ export default function WishCard({
   }
 
   const remove = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
+    stop(e)
     dispatch({ type: 'wish/remove', id: product.id })
     dispatch({ type: 'toast/show', text: 'Removed from wishlist', undo: true })
-  }
-
-  const share = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    onShare?.(product)
   }
 
   const body = (
@@ -71,14 +76,16 @@ export default function WishCard({
             {selected ? '✓' : ''}
           </span>
         ) : (
-          <div className="wcard-tools">
-            <button type="button" onClick={share} aria-label="Share">
-              {'⤴'}
+          <>
+            <span className="wcard-rating">{stats.avgRating.toFixed(1)}★</span>
+            <button
+              type="button"
+              className={'wcard-add' + (already ? ' is-done' : '')}
+              onClick={addToBag}
+            >
+              {already ? 'Go to Bag' : 'Add'}
             </button>
-            <button type="button" onClick={remove} aria-label="Remove from wishlist">
-              {'✕'}
-            </button>
-          </div>
+          </>
         )}
       </div>
 
@@ -87,9 +94,10 @@ export default function WishCard({
         <div className="pcard-name">{product.name}</div>
         <div className="pcard-price">
           <span className="now">{formatINR(onSale ? product.salePrice : product.price)}</span>
+          {onSale && product.discount > 0 && <span className="off">{product.discount}% OFF</span>}
           {onSale && <span className="was">{formatINR(product.price)}</span>}
-          {onSale && product.discount > 0 && <span className="off">{product.discount}% off</span>}
         </div>
+        <div className="wcard-delivery">{deliveryLabel(product.id)}</div>
 
         {organised && (
           <>
@@ -130,13 +138,31 @@ export default function WishCard({
       )}
 
       {!selectMode && (
-        <button
-          type="button"
-          className={'wcard-add' + (already ? ' is-done' : '')}
-          onClick={addToBag}
-        >
-          {already ? 'Go to Bag' : 'Add to Bag'}
-        </button>
+        <div className="wcard-tools">
+          <button type="button" onClick={remove} aria-label="Remove from wishlist">
+            {'🗑'}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              stop(e)
+              onTag?.(product)
+            }}
+            aria-label="Set occasion"
+          >
+            {'⊞'}
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              stop(e)
+              onShare?.(product)
+            }}
+            aria-label="Share"
+          >
+            {'⤴'}
+          </button>
+        </div>
       )}
     </div>
   )

@@ -1,6 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { formatINR } from '../data/catalog'
 import { useStore, savedLabel } from '../state/store'
+import ScreenHeader from '../components/ScreenHeader'
 import './unavailable.css'
 
 const STATUS = {
@@ -12,19 +13,14 @@ const STATUS = {
 // cross-sell suggestion, so the main list stays actionable.
 export default function Unavailable() {
   const { unavailable, dispatch, toast } = useStore()
-  const navigate = useNavigate()
 
   return (
     <div className="un">
-      <div className="sub-head">
-        <button type="button" className="sub-back" onClick={() => navigate(-1)} aria-label="Go back">
-          {'‹'}
-        </button>
-        <div>
-          <h1>Currently unavailable ({unavailable.length})</h1>
-          <p>Moved here so your main list stays actionable</p>
-        </div>
-      </div>
+      <ScreenHeader
+        title="Currently unavailable"
+        subtitle={'(' + unavailable.length + ')'}
+      />
+      <p className="un-caption">Moved here so your main list stays actionable</p>
 
       {unavailable.length === 0 ? (
         <p className="un-empty">Everything in your wishlist is available right now.</p>

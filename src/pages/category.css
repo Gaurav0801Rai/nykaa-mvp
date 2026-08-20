@@ -43,7 +43,10 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  /* minmax(0, …) rather than a bare 1fr: the automatic minimum is min-content,
+     which the card images push past, so plain 1fr columns overflow the phone
+     width and get clipped. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 10px;
   padding: 14px 12px 24px;
 }

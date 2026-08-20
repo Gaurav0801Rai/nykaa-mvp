@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     })),
   })
 
-  const parsed = await groqJSON('confidence', { system: SYSTEM, user, maxTokens: 1200 })
+  const parsed = await groqJSON('confidence', { system: SYSTEM, user, maxTokens: 3000 })
 
   // Drop anything malformed or unrecognised rather than failing the request.
   const reasons = {}

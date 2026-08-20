@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     medianPriceOfOtherSaves: Number(body?.medianPrice) || null,
   })
 
-  const parsed = await groqJSON('occasion', { system: SYSTEM, user, maxTokens: 900 })
+  const parsed = await groqJSON('occasion', { system: SYSTEM, user, maxTokens: 2500 })
 
   const tags = {}
   for (const row of asArray(parsed?.tags)) {

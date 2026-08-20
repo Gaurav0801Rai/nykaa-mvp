@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { formatINR } from '../data/catalog'
 import { sizesFor } from '../lib/sizing'
 import { useStore } from '../state/store'
 import useCrossSell from '../lib/useCrossSell'
+import ScreenHeader from '../components/ScreenHeader'
 import ConfidenceBadge from '../components/ConfidenceBadge'
 import ConfidenceSheet from '../components/ConfidenceSheet'
 import './bag.css'
 
 export default function Bag() {
-  const navigate = useNavigate()
   const { bagLines, available, dispatch, sizeFor, toast } = useStore()
 
   const [ticked, setTicked] = useState([])
@@ -60,15 +60,20 @@ export default function Bag() {
 
   return (
     <div className="bag">
-      <div className="sub-head">
-        <button type="button" className="sub-back" onClick={() => navigate(-1)} aria-label="Go back">
-          {'‹'}
-        </button>
-        <div>
-          <h1>Bag</h1>
-          <p>{bagLines.length ? bagLines.length + ' items in your bag' : 'Your bag is empty'}</p>
-        </div>
-      </div>
+      <ScreenHeader
+        title="Bag"
+        subtitle={
+          bagLines.length
+            ? bagLines.length + (bagLines.length === 1 ? ' item' : ' items')
+            : 'empty'
+        }
+        showBag={false}
+        actions={
+          <Link to="/wishlist" className="shead-icon" aria-label="Wishlist">
+            {'♡'}
+          </Link>
+        }
+      />
 
       {bagLines.length > 0 && (
         <div className="bag-selrow">
